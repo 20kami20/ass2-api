@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Random User Info</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <h1>Random User Generator</h1>
+    <button id="fetchUserBtn">Get Random User</button>
+    <div id="userCard"></div>
+
+    <script>
+        const button = document.getElementById('fetchUserBtn');
+        const userCard = document.getElementById('userCard');
+
+        button.addEventListener('click', async () => {
+            userCard.innerHTML = 'Loading...';
+
+            try {
+                const userResponse = await fetch('/api/user');
+                const user = await userResponse.json();
+
+                const countryResponse = await fetch(`/api/country/${user.country}`);
+                const country = await countryResponse.json();
+
+                const exchangeResponse = await fetch(`/api/exchange/${country.currency}`);
+                const exchange = await exchangeResponse.json();
+
+                const newsResponse = await fetch(`/api/news/${user.country}`);
+                const news = await newsResponse.json();
+
+                userCard.innerHTML = `
+                    <div class="card">
+                        <img src="${user.profilePicture}" alt="Profile">
+                        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
+                        <p><strong>Gender:</strong> ${user.gender}</p>
+                        <p><strong>Age:</strong> ${user.age}</p>
+                        <p><strong>DOB:</strong> ${new Date(user.dob).toLocaleDateString()}</p>
+                        <p><strong>Address:</strong> ${user.address}, ${user.city}, ${user.country}</p>
+
+                        <h3>Country Info</h3>
+                        <p><strong>Capital:</strong> ${country.capital}</p>
+                        <p><strong>Languages:</strong> ${country.languages}</p>
+                        <p><strong>Currency:</strong> ${country.currency} <img src="${country.flag}" width="30"></p>
+
+                        <h3>Exchange Rates</h3>
+                        <p>1 ${country.currency} = ${exchange.USD} USD</p>
+                        <p>1 ${country.currency} = ${exchange.KZT} KZT</p>
+
+                        <h3>News</h3>
+                        ${news.map(n => `
+                            <div class="news-card">
+                                <h4>${n.title}</h4>
+                                ${n.image ? `<img src="${n.image}" width="100">` : ''}
+                                <p>${n.description || ''}</p>
+                                <a href="${n.url}" target="_blank">Read more</a>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (err) {
+                userCard.innerHTML = 'Error when uploading data.';
+            }
+        });
+    </script>
+</body>
+
+</html>
