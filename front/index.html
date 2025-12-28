@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weather, News & Currency</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+    <h1>🌍 City Dashboard</h1>
+    <p class="subtitle">Weather, News & Currency Information</p>
+
+    <div class="search-box">
+      <input id="city" type="text" placeholder="Enter city name" />
+      <button onclick="loadWeatherData()">Search</button>
+    </div>
+
+    <div class="cards">
+      <div class="card" id="weather"></div>
+      <div class="card" id="news"></div>
+      <div class="card" id="currency"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
